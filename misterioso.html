@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Site Misterioso</title>
+    <style>
+      :root{--bg:#000;--accent:#ff3cac}
+      html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:#000;color:#fff}
+      .mystery{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#000,#060606);}
+      .overlay{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:30}
+      .btn{background:var(--accent);color:#111;padding:14px 22px;border-radius:999px;border:none;font-weight:700;cursor:pointer;box-shadow:0 8px 30px rgba(255,60,172,0.18)}
+      .small{color:#ddd;font-size:14px;margin-top:12px}
+      .controls{position:fixed;left:16px;top:16px;z-index:60;display:flex;gap:8px;align-items:center}
+      .controls input{background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:8px}
+      #photo{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);max-width:90vw;max-height:90vh;object-fit:contain;display:none;z-index:10}
+      .overlay.hide{opacity:0;visibility:hidden;transition:opacity 800ms ease, visibility 800ms}
+      .reveal-anim{animation:fadeIn 900ms ease both}
+      @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+      .top-actions{position:fixed;right:16px;top:16px;z-index:70;display:flex;gap:8px}
+      .icon-btn{background:rgba(255,255,255,0.06);color:#fff;padding:8px 10px;border-radius:8px;border:none;cursor:pointer}
+    </style>
+  </head>
+  <body>
+    <img id="photo" src="minha_foto.jpg" alt="Foto misteriosa" />
+
+    <div class="overlay" id="overlay">
+      <div style="text-align:center">
+        <button id="reveal" class="btn">Revelar foto</button>
+        <div class="small">Aperte para revelar a foto misteriosa</div>
+      </div>
+    </div>
+
+
+    <div class="top-actions">
+      <button id="download" class="icon-btn">Baixar</button>
+      <button id="reset" class="icon-btn">Reset</button>
+    </div>
+
+    <script>
+      const overlay = document.getElementById('overlay');
+      const reveal = document.getElementById('reveal');
+      const photo = document.getElementById('photo');
+      const downloadBtn = document.getElementById('download');
+      const resetBtn = document.getElementById('reset');
+
+      let audio = new Audio('revelacao.mp3');
+
+      reveal.addEventListener('click', ()=>{
+     
+        audio.play().catch(()=>{});
+        overlay.classList.add('hide');
+        photo.style.display = 'block';
+        photo.classList.add('reveal-anim');
+      });
+
+      downloadBtn.addEventListener('click', ()=>{
+        const src = photo.src;
+        if(!src) return alert('Imagem não encontrada. Coloque "minha_foto.jpg" na pasta do site.');
+        const a = document.createElement('a'); a.href = src; a.download = 'revelada.jpg'; document.body.appendChild(a); a.click(); a.remove();
+      });
+
+      resetBtn.addEventListener('click', ()=>{
+        overlay.classList.remove('hide');
+        photo.style.display='none';
+        try{audio.pause();audio.currentTime=0;}catch(e){}
+      });
+    </script>
+  </body>
+</html>
